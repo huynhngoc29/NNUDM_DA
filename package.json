@@ -1,0 +1,23 @@
+{
+  "name": "nnudm_da",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huynhngoc29/NNUDM_DA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/huynhngoc29/NNUDM_DA/issues"
+  },
+  "homepage": "https://github.com/huynhngoc29/NNUDM_DA#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
