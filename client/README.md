@@ -1,102 +1,16 @@
-# Client - Frontend Application
+# React + Vite
 
-## React + Vite + Material-UI + Ant Design
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Ứng dụng frontend cho hệ thống thương mại điện tử trang sức.
+Currently, two official plugins are available:
 
-## Công nghệ
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-- **React 19** với Hooks
-- **Vite** - Fast build tool
-- **Material-UI** - Component library
-- **Ant Design** - UI components
-- **React Router** - Routing
-- **Redux** - State management
-- **Tailwind CSS** - Utility-first CSS
-- **Axios** - HTTP client
-- **Firebase** - Authentication
+## React Compiler
 
-## Cấu trúc thư mục
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-### `/src/api`
+## Expanding the ESLint configuration
 
-Chứa các API calls và axios configuration
-
-- `axiosConfig.js` - Cấu hình axios instance
-- `endpoints.js` - Định nghĩa API endpoints
-- Service files cho từng module (productService.js, userService.js, ...)
-
-### `/src/components`
-
-Reusable React components
-
-- Common components: Button, Input, Card, Modal, ...
-- Form components
-- UI components
-
-### `/src/pages`
-
-Page components cho từng route
-
-- Home
-- Products
-- ProductDetail
-- Cart
-- Checkout
-- Profile
-- Admin Dashboard
-
-### `/src/context`
-
-React Context cho state management
-
-- AuthContext
-- CartContext
-- ThemeContext
-
-### `/src/services`
-
-Business logic và helper functions
-
-### `/src/utils`
-
-Utility functions
-
-- formatters
-- validators
-- constants
-
-## Cài đặt
-
-```bash
-npm install
-```
-
-## Chạy development
-
-```bash
-npm run dev
-```
-
-Ứng dụng sẽ chạy tại: http://localhost:3000
-
-## Build production
-
-```bash
-npm run build
-```
-
-## Quy ước đặt tên
-
-- Components: PascalCase (VD: `ProductCard.jsx`)
-- Files khác: camelCase (VD: `useAuth.js`)
-- CSS Modules: `ComponentName.module.css`
-
-## Best Practices
-
-1. Sử dụng functional components với hooks
-2. Tách logic ra custom hooks
-3. Prop validation với PropTypes
-4. Lazy loading cho pages
-5. Memoization khi cần thiết (useMemo, useCallback)
-6. Code splitting
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

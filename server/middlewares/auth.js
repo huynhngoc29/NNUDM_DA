@@ -1,24 +1,69 @@
 import jwt from "jsonwebtoken";
+import { ERROR_CODES } from "../utils/errorCodes.js";
+import { APP_CONSTANTS } from "../config/constants.js";
 
-export const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
-
-  if (!token) {
-    return res.status(401).json({ error: "No token provided" });
+export const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  if (!authHeader?.startsWith("Bearer ")) {
+    return next({
+      statusCode: 401,
+      code: ERROR_CODES.TOKEN_INVALID,
+      message: "Token không hợp lệ hoặc thiếu.",
+    });
   }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+  const token = authHeader.split(" ")[1];
+
+  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, payload) => {
+    if (err) {
+      return next({
+        statusCode: 403,
+        code: ERROR_CODES.TOKEN_EXPIRED,
+        message: "Token đã hết hạn hoặc không hợp lệ.",
+      });
+    }
+
+    req.user = payload;
     next();
-  } catch (error) {
-    return res.status(401).json({ error: "Invalid token" });
-  }
+  });
 };
 
-export const adminMiddleware = (req, res, next) => {
-  if (!req.user || req.user.role !== "admin") {
-    return res.status(403).json({ error: "Access denied. Admin only." });
+export const isAdmin = (req, res, next) => {
+  const { user } = req;
+  if (!user || user.role_id !== APP_CONSTANTS.ROLE_ADMIN_ID) {
+    return next({
+      statusCode: 403,
+      code: ERROR_CODES.UNAUTHORIZED,
+      message: "Bạn không có quyền truy cập (yêu cầu admin).",
+    });
+  }
+  next();
+};
+
+export const isAdminOrStaff = (req, res, next) => {
+  const { user } = req;
+  if (
+    !user ||
+    (user.role_id !== APP_CONSTANTS.ROLE_ADMIN_ID &&
+      user.role_id !== APP_CONSTANTS.ROLE_STAFF_ID)
+  ) {
+    return next({
+      statusCode: 403,
+      code: ERROR_CODES.UNAUTHORIZED,
+      message: "Bạn không có quyền truy cập (yêu cầu admin hoặc staff).",
+    });
+  }
+  next();
+};
+
+export const isStaff = (req, res, next) => {
+  const { user } = req;
+  if (!user || user.role_id !== APP_CONSTANTS.ROLE_STAFF_ID) {
+    return next({
+      statusCode: 403,
+      code: ERROR_CODES.UNAUTHORIZED,
+      message: "Bạn không có quyền truy cập (yêu cầu staff).",
+    });
   }
   next();
 };

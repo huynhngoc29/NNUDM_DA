@@ -1,46 +1,70 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import apiRoutes from './routes/apiRoutes.js';
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+
+import apiRoutes from "./routes/apiRoutes.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
+import { verifyDbConnection } from "./config/db.js";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Basic request logging (keep light in production)
+app.use((req, res, next) => {
+  console.log(`\n=== Incoming Request ===`);
+  console.log(`${req.method} ${req.url}`);
+  console.log(`Origin:`, req.get("Origin") || "No Origin");
+  console.log(`========================\n`);
+  next();
+});
+
+const corsOptions = {
+  origin: true,
+  credentials: true,
+  methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
+  allowedHeaders: "Content-Type,Authorization,authtoken",
+  preflightContinue: false,
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+
+// Additional CORS headers for Flutter web
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,DELETE,PATCH,OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization, authtoken"
+  );
+
+  if (req.method === "OPTIONS") {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Routes
-app.use('/api', apiRoutes);
+app.use("/api", apiRoutes);
 
-// Health check
-app.get('/', (req, res) => {
-  res.json({ 
-    message: 'Jewelry E-Commerce API Server',
-    status: 'Running',
-    version: '1.0.0'
-  });
+// Global error handler
+app.use(errorHandler);
+
+const port = process.env.PORT || 3001;
+app.listen(port, async () => {
+  console.log(`Server running at http://localhost:${port}`);
+
+  await verifyDbConnection();
+
+  console.log("✅ Server ready");
 });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
-});
-
-// Error handling
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    error: 'Something went wrong!',
-    message: process.env.NODE_ENV === 'development' ? err.message : undefined
-  });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+export default app;

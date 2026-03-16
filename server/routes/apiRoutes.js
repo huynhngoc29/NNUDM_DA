@@ -1,17 +1,11 @@
 import express from "express";
+import { validateRequest } from "../middlewares/validateRequest.js";
+import * as authController from "../controllers/authController.js";
+import { registerSchema, loginSchema } from "../validators/authValidator.js";
 
 const router = express.Router();
 
-// Health check
-router.get("/health", (req, res) => {
-  res.json({ status: "OK", message: "API is running" });
-});
-
-// Add your routes here
-// Example:
-// import productRoutes from './productRoutes.js';
-// import userRoutes from './userRoutes.js';
-// router.use('/products', productRoutes);
-// router.use('/users', userRoutes);
+router.post("/auth/register", validateRequest(registerSchema), authController.register);
+router.post("/auth/login", validateRequest(loginSchema), authController.login);
 
 export default router;
