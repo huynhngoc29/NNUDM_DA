@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import CategoryForm from "../../../components/forms/CategoryForm";
+import React, { useState, useEffect } from "react";
 import AdminNav from "../../../components/nav/AdminNav";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 import { getCategories } from "../../../functions/category";
-import { getSub, updateSub } from "../../../functions/sub";
+import { updateSub, getSub } from "../../../functions/sub";
+import { Link } from "react-router-dom";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import CategoryForm from "../../../components/forms/CategoryForm";
+import LocalSearch from "../../../components/forms/LocalSearch";
 
 const SubUpdate = ({ match, history }) => {
   const { user } = useSelector((state) => ({ ...state }));
@@ -20,31 +23,30 @@ const SubUpdate = ({ match, history }) => {
   }, []);
 
   const loadCategories = () =>
-    getCategories().then((response) => setCategories(response.data));
+    getCategories().then((c) => setCategories(c.data));
 
   const loadSub = () =>
-    getSub(match.params.slug).then((response) => {
-      const sub = response.data.sub || response.data;
-      setName(sub.name);
-      setParent(sub.parent);
+    getSub(match.params.slug).then((s) => {
+      setName(s.data.name);
+      setParent(s.data.parent);
     });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // console.log(name);
     setLoading(true);
     updateSub(match.params.slug, { name, parent }, user.token)
-      .then((response) => {
+      .then((res) => {
+        // console.log(res)
         setLoading(false);
         setName("");
-        toast.success(`"${response.data.name}" is updated`);
+        toast.success(`"${res.data.name}" is updated`);
         history.push("/admin/sub");
       })
       .catch((err) => {
         console.log(err);
         setLoading(false);
-        if (err.response && err.response.status === 400) {
-          toast.error(err.response.data);
-        }
+        if (err.response.status === 400) toast.error(err.response.data);
       });
   };
 
@@ -67,14 +69,14 @@ const SubUpdate = ({ match, history }) => {
               name="category"
               className="form-control"
               onChange={(e) => setParent(e.target.value)}
-              value={parent}
             >
-              <option value="">Please select</option>
-              {categories.map((item) => (
-                <option key={item._id} value={item._id}>
-                  {item.name}
-                </option>
-              ))}
+              <option>Please select</option>
+              {categories.length > 0 &&
+                categories.map((c) => (
+                  <option key={c._id} value={c._id} selected={c._id === parent}>
+                    {c.name}
+                  </option>
+                ))}
             </select>
           </div>
 

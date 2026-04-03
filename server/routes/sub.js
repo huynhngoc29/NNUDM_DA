@@ -1,9 +1,13 @@
 const express = require("express");
-
 const router = express.Router();
-const { authCheck, adminCheck } = require("../middlewares/auth");
-const { create, list, read, update, remove } = require("../controllers/sub");
 
+// middlewares
+const { authCheck, adminCheck } = require("../middlewares/auth");
+
+// controller
+const { create, read, update, remove, list } = require("../controllers/sub");
+
+// routes
 router.post("/sub", authCheck, adminCheck, create);
 router.get("/subs", list);
 router.get("/sub/:slug", read);

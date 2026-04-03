@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    picture: String,
     role: {
       type: String,
       default: "subscriber",
@@ -18,7 +17,12 @@ const userSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "Role",
     },
+    cart: {
+      type: Array,
+      default: [],
+    },
     address: String,
+    wishlist: [{ type: ObjectId, ref: "Product" }],
   },
   { timestamps: true }
 );

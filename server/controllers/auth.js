@@ -1,3 +1,4 @@
+const user = require("../models/user");
 const User = require("../models/user");
 const Role = require("../models/role");
 
@@ -45,41 +46,33 @@ const normalizeUserRole = async (userDoc) => {
 };
 
 exports.createOrUpdateUser = async (req, res) => {
-  const { picture, email } = req.user;
+  const { name, picture, email } = req.user;
   const subscriberRole = await findOrCreateRole("subscriber");
 
   let user = await User.findOneAndUpdate(
     { email },
-    {
+    { name: email.split("@")[0], picture, roleRef: subscriberRole._id },
+    { new: true }
+  );
+  if (user) {
+    console.log("USER UPDATED", user);
+    res.json(await normalizeUserRole(user));
+  } else {
+    const newUser = await new User({
+      email,
       name: email.split("@")[0],
       picture,
       role: subscriberRole.slug,
       roleRef: subscriberRole._id,
-    },
-    { new: true }
-  ).exec();
-
-  if (user) {
-    return res.json(await normalizeUserRole(user));
+    }).save();
+    console.log("USER CREATED", newUser);
+    res.json(await normalizeUserRole(newUser));
   }
-
-  const newUser = await new User({
-    email,
-    name: email.split("@")[0],
-    picture,
-    role: subscriberRole.slug,
-    roleRef: subscriberRole._id,
-  }).save();
-
-  res.json(await normalizeUserRole(newUser));
 };
 
 exports.currentUser = async (req, res) => {
   const currentUser = await User.findOne({ email: req.user.email })
     .populate("roleRef")
     .exec();
-
   res.json(await normalizeUserRole(currentUser));
 };
-
-exports.normalizeUserRole = normalizeUserRole;

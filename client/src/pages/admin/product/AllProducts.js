@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
+import AdminNav from "../../../components/nav/AdminNav";
+import { getProductsByCount } from "../../../functions/product";
+import AdminProductCard from "../../../components/cards/AdminProductCart";
+import { removeProduct } from "../../../functions/product";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import AdminProductCard from "../../../components/cards/AdminProductCart";
-import AdminNav from "../../../components/nav/AdminNav";
-import { getProductsByCount, removeProduct } from "../../../functions/product";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  // redux
   const { user } = useSelector((state) => ({ ...state }));
 
   useEffect(() => {
@@ -17,27 +19,27 @@ const AllProducts = () => {
   const loadAllProducts = () => {
     setLoading(true);
     getProductsByCount(100)
-      .then((response) => {
-        setProducts(response.data);
+      .then((res) => {
+        setProducts(res.data);
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
         setLoading(false);
+        console.log(err);
       });
   };
 
   const handleRemove = (slug) => {
+    // let answer = window.confirm("Delete?");
     if (window.confirm("Delete?")) {
+      // console.log("send delete request", slug);
       removeProduct(slug, user.token)
-        .then((response) => {
-          toast.error(`${response.data.title} is deleted`);
+        .then((res) => {
           loadAllProducts();
+          toast.error(`${res.data.title} is deleted`);
         })
         .catch((err) => {
-          if (err.response && err.response.status === 400) {
-            toast.error(err.response.data);
-          }
+          if (err.response.status === 400) toast.error(err.response.data);
           console.log(err);
         });
     }

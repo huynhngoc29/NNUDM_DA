@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import CategoryForm from "../../../components/forms/CategoryForm";
+import React, { useState, useEffect } from "react";
 import AdminNav from "../../../components/nav/AdminNav";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 import { getCategory, updateCategory } from "../../../functions/category";
 
 const CategoryUpdate = ({ history, match }) => {
@@ -16,27 +15,44 @@ const CategoryUpdate = ({ history, match }) => {
   }, []);
 
   const loadCategory = () =>
-    getCategory(match.params.slug).then((response) => {
-      setName(response.data.name || response.data.category?.name || "");
-    });
+    getCategory(match.params.slug).then((c) => setName(c.data.name));
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // console.log(name);
     setLoading(true);
     updateCategory(match.params.slug, { name }, user.token)
-      .then((response) => {
+      .then((res) => {
+        // console.log(res)
         setLoading(false);
-        toast.success(`"${response.data.name}" is updated`);
+        setName("");
+        toast.success(`"${res.data.name}" is updated`);
         history.push("/admin/category");
       })
       .catch((err) => {
         console.log(err);
         setLoading(false);
-        if (err.response && err.response.status === 400) {
-          toast.error(err.response.data);
-        }
+        if (err.response.status === 400) toast.error(err.response.data);
       });
   };
+
+  const categoryForm = () => (
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label>Name</label>
+        <input
+          type="text"
+          className="form-control"
+          onChange={(e) => setName(e.target.value)}
+          value={name}
+          autoFocus
+          required
+        />
+        <br />
+        <button className="btn btn-outline-primary">Save</button>
+      </div>
+    </form>
+  );
 
   return (
     <div className="container-fluid">
@@ -50,12 +66,8 @@ const CategoryUpdate = ({ history, match }) => {
           ) : (
             <h4>Update category</h4>
           )}
-
-          <CategoryForm
-            handleSubmit={handleSubmit}
-            name={name}
-            setName={setName}
-          />
+          {categoryForm()}
+          <hr />
         </div>
       </div>
     </div>

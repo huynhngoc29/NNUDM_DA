@@ -43,7 +43,6 @@ const productSchema = new mongoose.Schema(
     },
     images: {
       type: Array,
-      default: [],
     },
     shipping: {
       type: String,
