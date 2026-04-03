@@ -2,21 +2,29 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const ProductListItems = ({ product }) => {
-  const { price, category, subs, shipping, color, brand, quantity, sold } =
-    product;
+  const {
+    price,
+    category,
+    subs,
+    shipping,
+    color,
+    brand,
+    quantity,
+    sold,
+  } = product;
 
   return (
     <ul className="list-group">
       <li className="list-group-item">
-        Price
+        Price{" "}
         <span className="label label-default label-pill pull-xs-right">
-          ${price}
+          $ {price}
         </span>
       </li>
 
       {category && (
         <li className="list-group-item">
-          Category
+          Category{" "}
           <Link
             to={`/category/${category.slug}`}
             className="label label-default label-pill pull-xs-right"
@@ -26,51 +34,51 @@ const ProductListItems = ({ product }) => {
         </li>
       )}
 
-      {!!subs?.length && (
+      {subs && (
         <li className="list-group-item">
           Sub Categories
-          {subs.map((sub) => (
+          {subs.map((s) => (
             <Link
-              key={sub._id}
-              to={`/sub/${sub.slug}`}
+              key={s._id}
+              to={`/sub/${s.slug}`}
               className="label label-default label-pill pull-xs-right"
             >
-              {sub.name}
+              {s.name}
             </Link>
           ))}
         </li>
       )}
 
       <li className="list-group-item">
-        Shipping
+        Shipping{" "}
         <span className="label label-default label-pill pull-xs-right">
           {shipping}
         </span>
       </li>
 
       <li className="list-group-item">
-        Color
+        Color{" "}
         <span className="label label-default label-pill pull-xs-right">
           {color}
         </span>
       </li>
 
       <li className="list-group-item">
-        Brand
+        Brand{" "}
         <span className="label label-default label-pill pull-xs-right">
           {brand}
         </span>
       </li>
 
       <li className="list-group-item">
-        Available
+        Available{" "}
         <span className="label label-default label-pill pull-xs-right">
           {quantity}
         </span>
       </li>
 
       <li className="list-group-item">
-        Sold
+        Sold{" "}
         <span className="label label-default label-pill pull-xs-right">
           {sold}
         </span>

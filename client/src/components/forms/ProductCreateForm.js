@@ -8,23 +8,25 @@ const ProductCreateForm = ({
   handleChange,
   setValues,
   values,
-  handleCategoryChange,
+  handleCatagoryChange,
   subOptions,
   showSub,
 }) => {
+  // destructure
   const {
     title,
     description,
     price,
     categories,
+    category,
     subs,
     shipping,
     quantity,
+    images,
     colors,
     brands,
     color,
     brand,
-    imageUrl,
   } = values;
 
   return (
@@ -42,12 +44,12 @@ const ProductCreateForm = ({
 
       <div className="form-group">
         <label>Description</label>
-        <textarea
+        <input
+          type="text"
           name="description"
           className="form-control"
           value={description}
           onChange={handleChange}
-          rows="4"
         />
       </div>
 
@@ -63,26 +65,13 @@ const ProductCreateForm = ({
       </div>
 
       <div className="form-group">
-        <label>Image URL</label>
-        <input
-          type="text"
-          name="imageUrl"
-          className="form-control"
-          value={imageUrl}
-          onChange={handleChange}
-          placeholder="https://..."
-        />
-      </div>
-
-      <div className="form-group">
         <label>Shipping</label>
         <select
           name="shipping"
           className="form-control"
           onChange={handleChange}
-          value={shipping}
         >
-          <option value="">Please select</option>
+          <option>Please select</option>
           <option value="No">No</option>
           <option value="Yes">Yes</option>
         </select>
@@ -101,16 +90,11 @@ const ProductCreateForm = ({
 
       <div className="form-group">
         <label>Color</label>
-        <select
-          name="color"
-          className="form-control"
-          onChange={handleChange}
-          value={color}
-        >
-          <option value="">Please select</option>
-          {colors.map((item) => (
-            <option key={item} value={item}>
-              {item}
+        <select name="color" className="form-control" onChange={handleChange}>
+          <option>Please select</option>
+          {colors.map((c) => (
+            <option key={c} value={c}>
+              {c}
             </option>
           ))}
         </select>
@@ -118,16 +102,11 @@ const ProductCreateForm = ({
 
       <div className="form-group">
         <label>Brand</label>
-        <select
-          name="brand"
-          className="form-control"
-          onChange={handleChange}
-          value={brand}
-        >
-          <option value="">Please select</option>
-          {brands.map((item) => (
-            <option key={item} value={item}>
-              {item}
+        <select name="brand" className="form-control" onChange={handleChange}>
+          <option>Please select</option>
+          {brands.map((b) => (
+            <option key={b} value={b}>
+              {b}
             </option>
           ))}
         </select>
@@ -138,19 +117,20 @@ const ProductCreateForm = ({
         <select
           name="category"
           className="form-control"
-          onChange={handleCategoryChange}
+          onChange={handleCatagoryChange}
         >
-          <option value="">Please select</option>
-          {categories.map((item) => (
-            <option key={item._id} value={item._id}>
-              {item.name}
-            </option>
-          ))}
+          <option>Please select</option>
+          {categories.length > 0 &&
+            categories.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.name}
+              </option>
+            ))}
         </select>
       </div>
 
       {showSub && (
-        <div className="form-group">
+        <div>
           <label>Sub Categories</label>
           <Select
             mode="multiple"
@@ -162,9 +142,9 @@ const ProductCreateForm = ({
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={(value) => setValues({ ...values, subs: value })}
           >
-            {subOptions.map((item) => (
-              <Option key={item._id} value={item._id}>
-                {item.name}
+            {subOptions.map((s) => (
+              <Option key={s._id} value={s._id}>
+                {s.name}
               </Option>
             ))}
           </Select>

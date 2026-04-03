@@ -16,10 +16,9 @@ exports.list = async (req, res) =>
   res.json(await Sub.find({}).sort({ createdAt: -1 }).exec());
 
 exports.read = async (req, res) => {
-  const sub = await Sub.findOne({ slug: req.params.slug }).exec();
-  const products = await Product.find({ subs: sub._id })
+  let sub = await Sub.findOne({ slug: req.params.slug }).exec();
+  const products = await Product.find({ subs: sub })
     .populate("category")
-    .populate("subs")
     .exec();
 
   res.json({
@@ -35,20 +34,18 @@ exports.update = async (req, res) => {
       { slug: req.params.slug },
       { name, parent, slug: slugify(name) },
       { new: true }
-    ).exec();
+    );
     res.json(updated);
   } catch (err) {
-    console.log("SUB UPDATE ERR ----->", err);
     res.status(400).send("Sub update failed");
   }
 };
 
 exports.remove = async (req, res) => {
   try {
-    const deleted = await Sub.findOneAndDelete({ slug: req.params.slug }).exec();
+    const deleted = await Sub.findOneAndDelete({ slug: req.params.slug });
     res.json(deleted);
   } catch (err) {
-    console.log("SUB DELETE ERR ----->", err);
     res.status(400).send("Sub delete failed");
   }
 };

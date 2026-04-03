@@ -1,6 +1,29 @@
+const Order = require("../models/order");
 const User = require("../models/user");
 const Role = require("../models/role");
-const { normalizeUserRole } = require("./auth");
+
+exports.orders = async (req, res) => {
+  let allOrders = await Order.find({})
+    .sort("-createdAt")
+    .populate("products.product")
+    .exec();
+
+  res.json(allOrders);
+};
+
+exports.orderStatus = async (req, res) => {
+  // console.log(req.body);
+  // return;
+  const { orderId, orderStatus } = req.body;
+
+  let updated = await Order.findByIdAndUpdate(
+    orderId,
+    { orderStatus },
+    { new: true }
+  ).exec();
+
+  res.json(updated);
+};
 
 exports.getUsers = async (req, res) => {
   const users = await User.find({})
@@ -8,15 +31,22 @@ exports.getUsers = async (req, res) => {
     .sort({ createdAt: -1 })
     .exec();
 
-  const normalizedUsers = await Promise.all(
-    users.map(async (user) => normalizeUserRole(user))
-  );
+  const normalizedUsers = users.map((user) => {
+    const currentRole =
+      (user.roleRef && user.roleRef.slug) || user.role || "subscriber";
+
+    return {
+      ...user.toObject(),
+      role: currentRole,
+    };
+  });
 
   res.json(normalizedUsers);
 };
 
 exports.updateUserRole = async (req, res) => {
   const { userId, roleId } = req.body;
+
   const role = await Role.findById(roleId).exec();
 
   if (!role) {
@@ -34,5 +64,5 @@ exports.updateUserRole = async (req, res) => {
     .populate("roleRef")
     .exec();
 
-  res.json(await normalizeUserRole(updatedUser));
+  res.json(updatedUser);
 };
