@@ -24,8 +24,9 @@ const SubUpdate = ({ match, history }) => {
 
   const loadSub = () =>
     getSub(match.params.slug).then((response) => {
-      setName(response.data.name);
-      setParent(response.data.parent);
+      const sub = response.data.sub || response.data;
+      setName(sub.name);
+      setParent(sub.parent);
     });
 
   const handleSubmit = (e) => {
