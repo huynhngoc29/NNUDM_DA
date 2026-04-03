@@ -17,6 +17,8 @@ const Register = lazy(() => import("./pages/auth/Register"));
 const RegisterComplete = lazy(() => import("./pages/auth/RegisterComplete"));
 const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const CategoryCreate = lazy(() => import("./pages/admin/category/CategoryCreate"));
+const CategoryUpdate = lazy(() => import("./pages/admin/category/CategoryUpdate"));
 const RoleCreate = lazy(() => import("./pages/admin/role/RoleCreate"));
 const RoleUpdate = lazy(() => import("./pages/admin/role/RoleUpdate"));
 
@@ -70,6 +72,12 @@ const App = () => {
         <Route exact path="/forgot/password" component={ForgotPassword} />
         <UserRoute exact path="/user/password" component={Password} />
         <AdminRoute exact path="/admin/dashboard" component={AdminDashboard} />
+        <AdminRoute exact path="/admin/category" component={CategoryCreate} />
+        <AdminRoute
+          exact
+          path="/admin/category/:slug"
+          component={CategoryUpdate}
+        />
         <AdminRoute exact path="/admin/role" component={RoleCreate} />
         <AdminRoute exact path="/admin/role/:slug" component={RoleUpdate} />
       </Switch>
