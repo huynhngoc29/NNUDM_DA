@@ -19,6 +19,8 @@ const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const CategoryCreate = lazy(() => import("./pages/admin/category/CategoryCreate"));
 const CategoryUpdate = lazy(() => import("./pages/admin/category/CategoryUpdate"));
+const SubCreate = lazy(() => import("./pages/admin/sub/SubCreate"));
+const SubUpdate = lazy(() => import("./pages/admin/sub/SubUpdate"));
 const RoleCreate = lazy(() => import("./pages/admin/role/RoleCreate"));
 const RoleUpdate = lazy(() => import("./pages/admin/role/RoleUpdate"));
 
@@ -78,6 +80,8 @@ const App = () => {
           path="/admin/category/:slug"
           component={CategoryUpdate}
         />
+        <AdminRoute exact path="/admin/sub" component={SubCreate} />
+        <AdminRoute exact path="/admin/sub/:slug" component={SubUpdate} />
         <AdminRoute exact path="/admin/role" component={RoleCreate} />
         <AdminRoute exact path="/admin/role/:slug" component={RoleUpdate} />
       </Switch>
