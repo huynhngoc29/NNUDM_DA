@@ -23,7 +23,6 @@ exports.read = async (req, res) => {
   // res.json(category);
   const products = await Product.find({ category })
   .populate("category")
-  .populate("postedBy", "_id name")
   .exec();
 
   res.json({

@@ -63,6 +63,12 @@ exports.getUserCart = async (req, res) => {
     .populate("products.product", "_id title price totalAfterDiscount")
     .exec();
 
+  if (!cart) {
+    return res.status(400).json({
+      err: "Cart not found",
+    });
+  }
+
   const { products, cartTotal, totalAfterDiscount } = cart;
   res.json({ products, cartTotal, totalAfterDiscount });
 };
@@ -98,9 +104,17 @@ exports.applyCouponToUserCart = async (req, res) => {
 
   const user = await User.findOne({ email: req.user.email }).exec();
 
-  let { products, cartTotal } = await Cart.findOne({ orderdBy: user._id })
+  const userCart = await Cart.findOne({ orderdBy: user._id })
     .populate("products.product", "_id title price")
     .exec();
+
+  if (!userCart) {
+    return res.status(400).json({
+      err: "Cart not found",
+    });
+  }
+
+  let { products, cartTotal } = userCart;
 
   console.log("cartTotal", cartTotal, "discount%", validCoupon.discount);
 
@@ -128,7 +142,15 @@ exports.createOrder = async (req, res) => {
 
   const user = await User.findOne({ email: req.user.email }).exec();
 
-  let { products } = await Cart.findOne({ orderdBy: user._id }).exec();
+  const userCart = await Cart.findOne({ orderdBy: user._id }).exec();
+
+  if (!userCart) {
+    return res.status(400).json({
+      err: "Cart not found",
+    });
+  }
+
+  let { products } = userCart;
 
   let newOrder = await new Order({
     products,
@@ -222,6 +244,12 @@ exports.createCashOrder = async (req, res) => {
   const user = await User.findOne({ email: req.user.email }).exec();
 
   let userCart = await Cart.findOne({ orderdBy: user._id }).exec();
+
+  if (!userCart) {
+    return res.status(400).json({
+      err: "Cart not found",
+    });
+  }
 
   let finalAmount = 0;
 
