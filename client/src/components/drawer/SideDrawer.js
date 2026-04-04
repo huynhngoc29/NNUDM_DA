@@ -1,9 +1,8 @@
 import React from "react";
-import { Drawer } from "antd";
+import { Drawer, Button } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-
-const placeholderImage = "https://via.placeholder.com/300x200?text=Product";
+import laptop from "../../images/laptop.jpg";
 
 const SideDrawer = () => {
   const dispatch = useDispatch();
@@ -34,14 +33,14 @@ const SideDrawer = () => {
           <div className="col">
             {p.images[0] ? (
               <>
-                <img src={p.images[0].url} alt={p.title} style={imageStyle} />
+                <img src={p.images[0].url} style={imageStyle} />
                 <p className="text-center bg-secondary text-light">
                   {p.title} x {p.count}
                 </p>
               </>
             ) : (
               <>
-                <img src={placeholderImage} alt={p.title} style={imageStyle} />
+                <img src={laptop} style={imageStyle} />
                 <p className="text-center bg-secondary text-light">
                   {p.title} x {p.count}
                 </p>

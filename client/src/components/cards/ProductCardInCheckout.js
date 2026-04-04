@@ -1,5 +1,6 @@
 import React from "react";
 import ModalImage from "react-modal-image";
+import laptop from "../../images/laptop.jpg";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import {
@@ -7,8 +8,6 @@ import {
   CloseCircleOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
-
-const placeholderImage = "https://via.placeholder.com/300x200?text=Product";
 
 const ProductCardInCheckout = ({ p }) => {
   const colors = ["Black", "Brown", "Silver", "White", "Blue"];
@@ -23,7 +22,7 @@ const ProductCardInCheckout = ({ p }) => {
         cart = JSON.parse(localStorage.getItem("cart"));
       }
 
-      cart.forEach((product, i) => {
+      cart.map((product, i) => {
         if (product._id === p._id) {
           cart[i].color = e.target.value;
         }
@@ -54,8 +53,8 @@ const ProductCardInCheckout = ({ p }) => {
         cart = JSON.parse(localStorage.getItem("cart"));
       }
 
-      cart.forEach((product, i) => {
-        if (product._id === p._id) {
+      cart.map((product, i) => {
+        if (product._id == p._id) {
           cart[i].count = count;
         }
       });
@@ -77,7 +76,7 @@ const ProductCardInCheckout = ({ p }) => {
         cart = JSON.parse(localStorage.getItem("cart"));
       }
       // [1,2,3,4,5]
-      cart.forEach((product, i) => {
+      cart.map((product, i) => {
         if (product._id === p._id) {
           cart.splice(i, 1);
         }
@@ -99,7 +98,7 @@ const ProductCardInCheckout = ({ p }) => {
             {p.images.length ? (
               <ModalImage small={p.images[0].url} large={p.images[0].url} />
             ) : (
-              <ModalImage small={placeholderImage} large={placeholderImage} />
+              <ModalImage small={laptop} large={laptop} />
             )}
           </div>
         </td>
