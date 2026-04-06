@@ -1,5 +1,5 @@
 import React from "react";
-import { Drawer, Button } from "antd";
+import { Drawer } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import laptop from "../../images/laptop.jpg";
@@ -17,7 +17,7 @@ const SideDrawer = () => {
   return (
     <Drawer
       className="text-center"
-      title={`Cart / ${cart.length} Product`}
+      title={`Cart / ${cart?.length || 0} Product`}
       placement="right"
       closable={false}
       onClose={() => {
@@ -26,23 +26,31 @@ const SideDrawer = () => {
           payload: false,
         });
       }}
-      visible={drawer}
+      open={drawer}
     >
-      {cart.map((p) => (
+      {(cart || []).map((p) => (
         <div key={p._id} className="row">
           <div className="col">
-            {p.images[0] ? (
+            {p?.images?.[0] ? (
               <>
-                <img src={p.images[0].url} style={imageStyle} />
+                <img
+                  src={p?.images?.[0]?.url}
+                  style={imageStyle}
+                  alt={p?.title || "product"}
+                />
                 <p className="text-center bg-secondary text-light">
-                  {p.title} x {p.count}
+                  {p?.title} x {p?.count}
                 </p>
               </>
             ) : (
               <>
-                <img src={laptop} style={imageStyle} />
+                <img
+                  src={laptop}
+                  style={imageStyle}
+                  alt={p?.title || "product"}
+                />
                 <p className="text-center bg-secondary text-light">
-                  {p.title} x {p.count}
+                  {p?.title} x {p?.count}
                 </p>
               </>
             )}
